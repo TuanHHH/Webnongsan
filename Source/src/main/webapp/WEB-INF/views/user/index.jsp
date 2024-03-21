@@ -132,7 +132,7 @@
 									<div class="featured__item__pic set-bg"
 										data-setbg="<c:url value="/assets/user/img/products/${item.image }"/>">
 										<ul class="featured__item__pic__hover">
-											<li><a href="<c:url value="/assets/user/#"/>"><i
+											<li><a href="<c:url value="/AddWishlist.htm?productId=${item.productId }"/>"><i
 													class="fa fa-heart"></i></a></li>
 											<li><a href="<c:url value="/assets/user/#"/>"><i
 													class="fa fa-retweet"></i></a></li>
@@ -163,7 +163,7 @@
 										<div class="featured__item__pic set-bg"
 											data-setbg="<c:url value="/assets/user/img/products/${item.image }"/>">
 											<ul class="featured__item__pic__hover">
-												<li><a href="<c:url value="/assets/user/#"/>"><i
+												<li><a href="<c:url value="/AddWishlist.htm?productId=${item.productId }"/>"><i
 														class="fa fa-heart"></i></a></li>
 												<li><a href="<c:url value="/assets/user/#"/>"><i
 														class="fa fa-retweet"></i></a></li>

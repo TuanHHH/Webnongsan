@@ -17,7 +17,11 @@
 	<div class="humberger__menu__cart">
 		<ul>
 			<li><a href="<c:url value="/assets/user/#"/>"><i
-					class="fa fa-heart"></i> <span>1</span></a></li>
+					class="fa fa-heart"></i> <span>
+					<c:if test="${not empty userInfo }">
+						${wishlist.size() }
+					</c:if>
+					</span></a></li>
 			<li><a href="<c:url value="/assets/user/#"/>"><i
 					class="fa fa-shopping-bag"></i> <span> <c:if
 							test="${not empty userInfo }">
@@ -108,7 +112,9 @@
 
 
 						<li><a href="<c:url value="/wishlist.htm"/>"><i
-								class="fa fa-heart"></i> <span>1</span></a></li>
+								class="fa fa-heart"></i> <span>
+									<c:if test="${not empty userInfo }">${wishlist.size() }</c:if>
+								</span></a></li>
 						<li><a href="<c:url value="/cart.htm"/>"><i
 								class="fa fa-shopping-bag"></i> <span> <c:if
 										test="${not empty userInfo }">${carts.size() }</c:if>

@@ -14,6 +14,7 @@ import ecofarm.DAOImpl.AccountDAOImpl;
 import ecofarm.DAOImpl.CartDAOImpl;
 import ecofarm.entity.Account;
 import ecofarm.entity.Cart;
+import ecofarm.entity.Wishlist;
 
 @Controller
 public class CartController {
@@ -22,14 +23,23 @@ public class CartController {
 	@RequestMapping("cart")
 	public String Index(HttpServletRequest request,HttpSession session,
 			@CookieValue(value = "userEmail",defaultValue = "",required = false) String userEmail) {
-		if (userEmail != "") {
-			Account account = accountDAO.getAccountByEmail(userEmail);
-			List<Cart> list = cartDAO.getCartByAccountID(account.getAccountId());
-			session.setAttribute("carts", list);
-			session.setAttribute("totalPrice", cartDAO.getTotalPrice(list));
+		try {
+			if (userEmail != "") {
+				Account account = accountDAO.getAccountByEmail(userEmail);
+				List<Cart> list = cartDAO.getCartByAccountID(account.getAccountId());
+				session.setAttribute("carts", list);
+				session.setAttribute("totalPrice", cartDAO.getTotalPrice(list));
+				return "user/cart";
+			}else {
+				return "redirect:/login.htm";
+			}
+		}catch (Exception e) {
+			// TODO: handle exception
+			return "redirect:/login.htm";
 		}
-		return "user/cart";
 	}
+	
+	
 	@RequestMapping("/AddCart")
 	public String AddToCart(@RequestParam(value = "productId",required = true) int productId,
 			@CookieValue(value = "userEmail",defaultValue = "",required = false) String userEmail,
@@ -40,6 +50,10 @@ public class CartController {
 		}	
 		Account account = accountDAO.getAccountByEmail(userEmail);
 		cartDAO.addToCart(productId,account.getAccountId());
+		
+		//Thay đổi số lượng của cart mỗi khi tương tác với addCart
+		List<Cart> list = cartDAO.getCartByAccountID(account.getAccountId());
+		session.setAttribute("carts", list);
 		return "redirect:"+request.getHeader("Referer");
 	}
 	
@@ -49,6 +63,7 @@ public class CartController {
 			HttpSession session, HttpServletRequest request) {
 		Account account = accountDAO.getAccountByEmail(userEmail);
 		cartDAO.deleteCart(productId, account.getAccountId());
+		//Tự động trừ đi số lượng của cart mỗi khi tương tác với delete vì redirect to cart
 		return "redirect:"+request.getHeader("Referer");
 	}
 	@RequestMapping("/EditCart")

@@ -25,12 +25,18 @@ public class WishlilstController {
 	@RequestMapping("/wishlist")
 	public String Index(HttpServletRequest request, HttpSession session,
 			@CookieValue(value = "userEmail", defaultValue = "", required = false) String userEmail) {
-		if (userEmail != "") {
-			Account account = accountDAO.getAccountByEmail(userEmail);
-			List<Wishlist> list = wishlistDAO.getWishlistByAccountID(account.getAccountId());
-			session.setAttribute("wishlist", list);
+		try {
+			if (userEmail != "") {
+				Account account = accountDAO.getAccountByEmail(userEmail);
+				List<Wishlist> list = wishlistDAO.getWishlistByAccountID(account.getAccountId());
+				session.setAttribute("wishlist", list);
+				return "user/wishlist";
+			}else {
+				return "redirect:/login.htm";
+			}
+		} catch (Exception e) {
+			return "redirect:/login.htm";
 		}
-		return "user/wishlist";
 	}
 
 	@RequestMapping("/AddWishlist")
@@ -43,6 +49,11 @@ public class WishlilstController {
 		}
 		Account account = accountDAO.getAccountByEmail(userEmail);
 		wishlistDAO.addToWishlist(productId, account.getAccountId());
+		
+		//Thay đổi thông tin số lượng của wishlist mỗi khi tương tác với wishlist
+		List<Wishlist> list = wishlistDAO.getWishlistByAccountID(account.getAccountId());
+		session.setAttribute("wishlist", list);
+		
 		return "redirect:" + request.getHeader("Referer");
 	}
 
@@ -52,6 +63,8 @@ public class WishlilstController {
 			HttpSession session, HttpServletRequest request) {
 		Account account = accountDAO.getAccountByEmail(userEmail);
 		wishlistDAO.deleteFromWishlist(productId, account.getAccountId());
+		
+		//Tự động trừ đi số lượng trong wishlist vì redirect qua wishlist
 		return "redirect:" + request.getHeader("Referer");
 	}
 }
