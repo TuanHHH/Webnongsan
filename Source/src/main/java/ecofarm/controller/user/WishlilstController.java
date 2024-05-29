@@ -44,7 +44,7 @@ public class WishlilstController {
 			HttpSession session, HttpServletRequest request) {
 		if (userEmail.equals("")) {
 			request.setAttribute("user", new Account());
-			return "user/login";
+			return "redirect:/login.htm";
 		}
 		Account account = accountDAO.getAccountByEmail(userEmail);
 		wishlistDAO.addToWishlist(productId, account.getAccountId());

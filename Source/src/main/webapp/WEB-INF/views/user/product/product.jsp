@@ -96,11 +96,11 @@
 
 
 						<div class="sidebar__item">
-							<h4 style="visibility: hidden;">Price</h4>
-							<div class="price-range-wrap" style="visibility: hidden;">
+							<h4>Price</h4>
+							<div class="price-range-wrap">
 								<div
 									class="price-range ui-slider ui-corner-all ui-slider-horizontal ui-widget ui-widget-content"
-									data-min="10" data-max="540">
+									data-min="1000" data-max="${maxprice }">
 									<div class="ui-slider-range ui-corner-all ui-widget-header"></div>
 									<span tabindex="0"
 										class="ui-slider-handle ui-corner-all ui-state-default"></span>
@@ -108,15 +108,64 @@
 										class="ui-slider-handle ui-corner-all ui-state-default"></span>
 								</div>
 								<div class="range-slider">
-									<div class="price-input">
-										<input type="text" id="minamount"> <input type="text"
-											id="maxamount">
+
+									<div class="d-flex justify-content-between">
+										<p class="price-value" id="minamount"></p>
+										<p class="price-value" id="maxamount"></p>
 									</div>
+									
+									<button class="btn btn-custom mt-4" onclick="filterByPrice()">Filter</button>
 								</div>
 							</div>
 						</div>
 
-						<div class="sidebar__item">
+						 <div class="sidebar__item">
+							<div class="latest-product__text">
+								<h3>Sản phẩm mới nhất</h3>
+
+								<c:set var="limitLatestProduct" value="${latestProducts.size()}" />
+
+								<c:if test="${limitLatestProduct > 5 }">
+									<c:set var="limitLatestProduct" value="5" />
+								</c:if>
+
+								<div class="latest-product__slider owl-carousel">
+
+									<div class="latest-prdouct__slider__item">
+										<c:forEach var="item" items="${latestProducts}"
+											varStatus="loop" begin="0" end="${limitLatestProduct }">
+											<a
+												href="<c:url value="/product-detail.htm?productId=${item.productId }"/>"
+												class="latest-product__item">
+												<div class="latest-product__item__pic">
+													<img
+														src="<c:url value="/assets/user/img/products/${item.image }"/>"
+														alt="">
+												</div>
+												<div class="latest-product__item__text">
+													<h6>${item.productName }</h6>
+													<span> <c:set var="formattedPrice">
+															<fmt:formatNumber value="${item.price}" type="number"
+																maxFractionDigits="0" />
+														</c:set> ${formattedPrice}đ
+													</span>
+												</div>
+											</a>
+											<c:if
+												test="${(loop.index+1) % 3 == 0 || (loop.index+1) == latestProducts.size() }">
+									</div>
+									<c:if test="${(loop.index+1) < limitLatestProduct }">
+										<div class="latest-prdouct__slider__item">
+									</c:if>
+									</c:if>
+									</c:forEach>
+								</div>
+							</div>
+
+						</div> 
+						<!--  -->
+						<!--  -->
+						<%-- <div class="sidebar__item">
 							<div class="latest-product__text">
 								<h3>Sản phẩm mới nhất</h3>
 
@@ -162,7 +211,51 @@
 								</div>
 							</div>
 
-						</div>
+						</div> --%>
+						<!--  -->
+						<!--  -->
+						
+<%-- 						<div class="sidebar__item">
+    <div class="latest-product__text">
+        <h3>Sản phẩm mới nhất</h3>
+		<c:set var="limitLatestProduct" value="${latestProducts.size()}" />
+		<c:if test="${limitLatestProduct > 5 }">
+									<c:set var="limitLatestProduct" value="5" />
+								</c:if>
+        <div class="latest-product__slider owl-carousel">
+            <c:forEach var="item" items="${latestProducts}" varStatus="loop" begin="0" end="${limitLatestProduct}">
+                <div class="latest-prdouct__slider__item">
+                    <a href="<c:url value="/product-detail.htm?productId=${item.productId }"/>" class="latest-product__item">
+                        <div class="latest-product__item__pic">
+                            <img src="<c:url value="/assets/user/img/products/${item.image }"/>" alt="">
+                        </div>
+                        <div class="latest-product__item__text">
+                            <h6>
+                                <a href="<c:url value="/product-detail.htm?productId=${item.productId }"/>">${item.productName }</a>
+													</h6>
+                            <span>
+                                <c:set var="formattedPrice">
+                                    <fmt:formatNumber value="${item.price}" type="number" maxFractionDigits="0" />
+                                </c:set>
+                                ${formattedPrice}đ
+                            </span>
+                        </div>
+                    </a>
+                </div>
+                <c:if test="${(loop.index + 1) % 3 == 0 || (loop.index + 1) == latestProducts.size()}">
+                    </div>
+                    <c:if test="${(loop.index + 1) < limitLatestProduct}">
+                        <div class="latest-prdouct__slider__item">
+                    </c:if>
+                </c:if>
+            </c:forEach>
+        </div>
+    </div>
+</div> --%>
+						
+						
+						<!--  -->
+						<!--  -->
 					</div>
 				</div>
 				<div class="col-lg-9 col-md-7">
@@ -183,15 +276,32 @@
 												data-setbg="<c:url value="/assets/user/img/products/${item.image }"/>">
 
 												<ul class="product__item__pic__hover">
-													<li><a
+													<li><%-- <a
 														href="<c:url value="/AddWishlist.htm?productId=${item.productId }"/>"><i
-															class="fa fa-heart"></i></a></li>
+															class="fa fa-heart"></i></a> --%>
+															
+															<form method="post" action="AddWishlist.htm?productId=${item.productId }">
+															<button
+																style="border: none; background-color: transparent;">
+																<a><i class="fa fa-heart"></i></a>
+															</button>
+														</form>
+															
+															
+															</li>
 													<li><a
 														href="<c:url value="/product-detail.htm?productId=${item.productId }"/>"><i
 															class="fa fa-retweet"></i></a></li>
-													<li><a
+													<li><%-- <a
 														href="<c:url value="/AddCart.htm?productId=${item.productId }"/>"><i
-															class="fa fa-shopping-cart"></i></a></li>
+															class="fa fa-shopping-cart"></i></a> --%>
+															<form method="post"
+															action="AddCart.htm?productId=${item.productId }">
+															<button
+																style="border: none; background-color: transparent;">
+																<a><i class="fa fa-shopping-cart"></i></a>
+																</button>
+														</form></li>
 												</ul>
 											</div>
 											<div class="product__discount__item__text">
@@ -215,7 +325,8 @@
 						<div class="filter__item mt-2">
 							<div class="row">
 								<div class="col-lg-4 col-md-5">
-									<div class="filter__sort" style="visibility: hidden;">
+									<!-- <div class="filter__sort" style="visibility: hidden;"> -->
+									<div class="filter__sort">
 										<span>Sắp xếp theo</span> <select>
 											<option value="0">Mặc định</option>
 											<option value="1">Theo giá</option>
@@ -266,7 +377,7 @@
 														<button
 															style="border: none; background-color: transparent;">
 															<a><i class="fa fa-shopping-cart"></i></a>
-															</button>
+														</button>
 													</form>
 												</li>
 											</ul>

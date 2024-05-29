@@ -107,4 +107,49 @@ public class ProductController {
                 .max() // Tìm giá lớn nhất
                 .orElse(1000);
     }
+	@RequestMapping(value="filterByCategory", method = RequestMethod.GET)
+	public String getProductCategorySearch(ModelMap model,
+			@RequestParam(value = "categoryId", required = false, defaultValue = "0") int id,
+			@RequestParam(value = "currentPage", required = false, defaultValue = "1") int crrPage,
+			@RequestParam(value = "sort", required = false) String sort,
+			@RequestParam(value = "minPrice", required = false) BigDecimal minPrice,
+	        @RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice) {
+		List<Category> cates = categoryDAO.getAllCategories();
+		List<Product> productsByCategory = productDAO.getProductsByCategoryID(id);
+		int maxPri = this.getMaxPrice(productsByCategory);
+		if (minPrice != null && maxPrice != null) {
+			if (!(minPrice.compareTo(BigDecimal.ZERO) >= 0 && minPrice.compareTo(new BigDecimal(1000)) < 0 && maxPrice.compareTo(new BigDecimal(maxPri)) == 0)) {
+		        productsByCategory = filterByPriceRange(productsByCategory, minPrice, maxPrice);
+		    }
+	    }
+
+	    if ("name".equals(sort)) {
+	        Collections.sort(productsByCategory, Comparator.comparing(Product::getProductName));
+	    }
+
+	    if ("price".equals(sort)) {
+	        Collections.sort(productsByCategory, Comparator.comparing(Product::getPrice));
+	    }
+	    
+	    int totalProducts = productsByCategory.size();
+	    
+//		mv.addObject("categories", cates);
+//		mv.addObject("productsByCategory", products);
+//		mv.addObject("latestProducts", productDAO.getLatestProductsByCaID(id));
+//		mv.addObject("categoryID", id);
+//		mv.addObject("paginateInfo", paginateDAO.getInfoPaginate(products.size(), 5, currentPage));
+//		mv.setViewName("user/product/product");
+	    
+		Paginate paginate = paginateDAO.getInfoPaginate(totalProducts, 6, crrPage);
+		List<Product> prods = productsByCategory.subList(paginate.getStart(), paginate.getEnd());
+		model.addAttribute("categories", cates);
+		model.addAttribute("latestProducts", productDAO.getLatestProduct());
+		model.addAttribute("productByCategory",productsByCategory);
+		model.addAttribute("paginateInfo", paginate);
+		model.addAttribute("total", totalProducts);
+		model.addAttribute("products", prods);
+		model.addAttribute("sort", sort);
+		model.addAttribute("maxprice", maxPri);
+		return "user/product/filterProduct.jsp";
+	}
 }
